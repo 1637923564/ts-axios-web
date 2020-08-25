@@ -8,3 +8,14 @@ export const normalizeRequest = (data: any): any => {
 
   return data
 }
+
+export const parseResponse = (data: any): any => {
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data)
+    } catch (e) {
+      // ...
+    }
+  }
+  return data
+}
