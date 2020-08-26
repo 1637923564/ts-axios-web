@@ -15,6 +15,19 @@ axios({
   console.log(res);
 })
 
+axios.post('/base/post', {
+  a: 1, 
+  b: 2
+}, {
+  headers: {
+    'content-type': 'application/json',
+    'Accept': 'application/json, text/plain, */*'
+  }
+}).then(res => {
+  console.log('!!!!!');
+  console.log(res)
+})
+
 axios({
   method: 'post',
   url: '/base/post',

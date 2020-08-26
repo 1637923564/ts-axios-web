@@ -1,10 +1,4 @@
-import {
-  CONTENT_TYPE,
-  RequestOptionsConf,
-  ResponseConf,
-  AxiosPromise,
-  AxiosErrorConf
-} from '../conf'
+import { CONTENT_TYPE, RequestOptionsConf, ResponseConf, AxiosPromise } from '../conf'
 import { parseResponseHeaders } from '../helpers/processHeaders'
 import { createError } from '../helpers/error'
 

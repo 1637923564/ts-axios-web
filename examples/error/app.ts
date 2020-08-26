@@ -6,6 +6,7 @@ axios({
 }).then((res) => {
   console.log(res)
 }).catch((e: AxiosErrorConf) => {
+  console.log(e.isAxiosError)
   // throw e
   console.log(e)
 })
