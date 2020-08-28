@@ -1,9 +1,10 @@
 import { AxiosConf, RequestOptionsConf } from './conf'
 import Axios from './core/Axios'
+import defaultsSet from './core/default'
 import { mixin } from './helpers/util'
 
 function __(): AxiosConf {
-  const context = new Axios()
+  const context = new Axios(defaultsSet)
 
   const _ = Axios.prototype.request.bind(context)
 

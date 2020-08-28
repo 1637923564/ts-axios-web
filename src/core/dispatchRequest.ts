@@ -2,7 +2,7 @@ import { AxiosPromise, RequestOptionsConf, ResponseConf } from '../conf'
 import { buildURL } from '../helpers/buildURL'
 import xhr from '../adapters/xhr'
 import { normalizeRequest, parseResponse } from '../helpers/requestData'
-import { normalizeHeaders } from '../helpers/processHeaders'
+import { mergeHeaders, normalizeHeaders } from '../helpers/processHeaders'
 
 function dispatchRequest(config: RequestOptionsConf): AxiosPromise {
   processConfig(config)
@@ -16,6 +16,7 @@ function processConfig(config: RequestOptionsConf): void {
   config.url = transformURL(config)
   config.headers = transformHeaders(config)
   config.data = transformRequestData(config)
+  config.headers = mergeHeaders(config.headers, config.method!)
 }
 
 // 处理传入的 url 和 params 选项

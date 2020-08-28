@@ -8,12 +8,12 @@ import {
   AxiosMethodSConf,
   ResolveType,
   RejectType,
-  ResponseConf,
-  InterceptorManagerType
+  ResponseConf
 } from '../conf'
 
 import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './interceptorManager'
+import mergeConfig from './mergeConfig'
 
 interface InterceptorsType {
   request: InterceptorManager<RequestURLOptional>
@@ -26,12 +26,14 @@ interface PromiseChain<T> {
 
 export default class Axios implements AxiosMethodSConf {
   interceptors: InterceptorsType
+  defaults: RequestURLOptional
 
-  constructor() {
+  constructor(defaultsSet: RequestURLOptional) {
     this.interceptors = {
       request: new InterceptorManager(),
       response: new InterceptorManager()
     }
+    this.defaults = defaultsSet
   }
 
   request(configOrURL: RequestOptionsConf | string, conf?: RequestURLOptional): AxiosPromise {
@@ -42,7 +44,9 @@ export default class Axios implements AxiosMethodSConf {
     } else {
       config = configOrURL
     }
-    // console.log(config)
+
+    // 自定义的config和默认config进行合并处理
+    config = mergeConfig(this.defaults, config)
 
     // 拦截器实现
     const chain: PromiseChain<any>[] = [

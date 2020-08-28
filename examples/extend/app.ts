@@ -1,5 +1,11 @@
 import axios from '../../src/index'
 
+axios.defaults.headers.post = {
+  name: 'laowang',
+  lao: 'sdfkjs',
+  age: 123
+}
+
 axios({
   url: '/extend/post',
   method: 'post',

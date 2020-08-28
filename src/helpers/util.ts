@@ -33,3 +33,24 @@ export function mixin<T, U>(to: T, from: U): T & U {
 
   return to as U & T
 }
+
+export function deepMerge(...args: any[]) {
+  const result = Object.create(null)
+
+  args.forEach(obj => {
+    Object.keys(obj).forEach(key => {
+      const val = obj[key]
+      if (isPlainObject(key)) {
+        if (result[key]) {
+          result[key] = deepMerge(result[key], val)
+        } else {
+          deepMerge(val)
+        }
+      } else {
+        result[key] = val
+      }
+    })
+  })
+
+  return result
+}

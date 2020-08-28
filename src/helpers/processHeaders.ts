@@ -1,11 +1,7 @@
-import { CONTENT_TYPE } from '../conf'
-import { isPlainObject } from './util'
+import { CONTENT_TYPE, Method, MethodsCollection } from '../conf'
+import { deepMerge, isPlainObject } from './util'
 
 export const normalizeHeaders = (headers: any, data: any) => {
-  // if (data === null || data === undefined) {
-  //   return
-  // }
-
   if (!headers) {
     headers = {}
   }
@@ -53,4 +49,32 @@ export const parseResponseHeaders = (headers: string): any => {
   })
 
   return parse
+}
+
+export function mergeHeaders(headers: any, method: Method) {
+  if (!headers) {
+    return headers
+  }
+
+  headers = deepMerge(headers['common'] || {}, headers[method] || {}, headers)
+
+  const methods = [
+    MethodsCollection.GET,
+    MethodsCollection.POST,
+    MethodsCollection.DELETE,
+    MethodsCollection.HEAD,
+    MethodsCollection.PATCH,
+    MethodsCollection.OPTIONS,
+    MethodsCollection.PUT
+  ]
+
+  delete headers['common']
+
+  methods.forEach(key => {
+    if (headers[key]) {
+      delete headers[key]
+    }
+  })
+
+  return headers
 }

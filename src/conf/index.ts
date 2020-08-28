@@ -1,5 +1,3 @@
-import InterceptorManager from '../core/interceptorManager'
-
 export const CONTENT_TYPE = 'Content-Type'
 
 export type Method =
@@ -18,6 +16,16 @@ export type Method =
   | 'PATCH'
   | 'patch'
 
+export const enum MethodsCollection {
+  GET = 'get',
+  POST = 'post',
+  DELETE = 'delete',
+  PUT = 'put',
+  HEAD = 'head',
+  OPTIONS = 'options',
+  PATCH = 'patch'
+}
+
 export interface RequestOptionsConf {
   url: string
   method?: Method
@@ -26,6 +34,7 @@ export interface RequestOptionsConf {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  [other: string]: any
 }
 
 export interface ResponseConf<T = any> {
@@ -36,6 +45,21 @@ export interface ResponseConf<T = any> {
   status: number
   statusText: string
 }
+
+export interface RequestURLOptional {
+  url?: string
+  method?: Method
+  params?: any
+  data?: any
+  headers?: any
+  responseType?: XMLHttpRequestResponseType
+  timeout?: number
+  [other: string]: any
+}
+
+// export interface DefaultSetConf extends RequestURLOptional {
+//   [other: string]: any
+// }
 
 export interface AxiosPromise<T = any> extends Promise<ResponseConf<T>> {}
 
@@ -48,22 +72,14 @@ export interface AxiosErrorConf extends Error {
   isAxiosError?: boolean
 }
 
-export interface RequestURLOptional {
-  url?: string
-  method?: Method
-  params?: any
-  data?: any
-  headers?: any
-  responseType?: XMLHttpRequestResponseType
-  timeout?: number
-}
-
 interface InterceptorsType {
   request: InterceptorManagerType<RequestURLOptional>
   response: InterceptorManagerType<ResponseConf>
 }
 
 export interface AxiosMethodSConf {
+  defaults: RequestURLOptional
+
   interceptors: InterceptorsType
 
   request<T = any>(config: RequestOptionsConf): AxiosPromise<T>

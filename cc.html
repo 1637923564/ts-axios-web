@@ -7,22 +7,71 @@
 </head>
 <body>
   <script>
-    function a() {
-      
+    let header1 = {
+      uname: 'Jerry',
+      age: 12,
+      country: 'USA',
+      love: {
+        fruts: 'apple',
+        game: 'LOL',
+        person: {
+          cname: '老唐',
+          uname: 'laotang',
+          age: 11,
+          love: {
+            person: '小李'
+          }
+        }
+      }
     }
-    
+    let header2 = {
+      uname: 'Tom',
+      age: 12,
+      gender: '男',
+      love: {
+        fruts: 'banaba',
+        exercise: 'run',
+        person: {
+          uname: '玛丽',
+          age: 15,
+          country: '中国',
+          love: {
+            exercise: '打乒乓球'
+          }
+        }
+      }
+    }
 
-    let promise = Promise.resolve('kkkk')
-    promise.then(res => {
-      return new Promise(resolve => {
-        resolve({
-          name: 'wangkai',
-          age: 12
-        })
+    let newHeader = deepMerge(header1, header2)
+    console.log(newHeader)
+
+    function deepMerge(...args) {
+      const result = Object.create(null)
+
+      args.forEach(info => {
+        if (info) {
+          Object.keys(info).forEach(key => {
+            const val = info[key]
+            if (isPlainObject(val)) {
+              if (isPlainObject(result[key])) {
+                result[key] = deepMerge(result[key], val)
+              } else {
+                result[key] = deepMerge(val)
+              }
+            } else {
+              result[key] = val
+            }
+          })
+        }
       })
-    }).then(res => {
-      console.log(res)
-    })
+
+      return result
+    }
+
+    function isPlainObject(val) {
+      const oToString = Object.prototype.toString
+      return toString.call(val) === '[object Object]'
+    }
   </script>
 </body>
 </html>

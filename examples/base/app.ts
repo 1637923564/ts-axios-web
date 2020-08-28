@@ -4,7 +4,7 @@ axios({
   method: 'post',
   url: '/base/post',
   headers: {
-    'content-type': 'application/json',
+    'content-type': 'application/x-www-form-urlencoded',
     'Accept': 'application/json, text/plain, */*'
   },
   data: {
