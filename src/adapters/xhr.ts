@@ -65,6 +65,7 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
       )
     }
 
+    // console.log(headerKeys)
     headerKeys.forEach(key => {
       const val = headers[key]
       // 不向服务器传输数据时，不需要配置Content-Type

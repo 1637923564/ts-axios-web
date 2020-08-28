@@ -1,3 +1,5 @@
+import InterceptorManager from '../core/interceptorManager'
+
 export const CONTENT_TYPE = 'Content-Type'
 
 export type Method =
@@ -56,7 +58,14 @@ export interface RequestURLOptional {
   timeout?: number
 }
 
+interface InterceptorsType {
+  request: InterceptorManagerType<RequestURLOptional>
+  response: InterceptorManagerType<ResponseConf>
+}
+
 export interface AxiosMethodSConf {
+  interceptors: InterceptorsType
+
   request<T = any>(config: RequestOptionsConf): AxiosPromise<T>
 
   get<T = any>(url: string, conf?: RequestURLOptional): AxiosPromise<T>
@@ -77,4 +86,17 @@ export interface AxiosMethodSConf {
 export interface AxiosConf extends AxiosMethodSConf {
   // (config: RequestOptionsConf): AxiosPromise
   <T = any>(configOrURL: RequestOptionsConf | string, conf?: RequestURLOptional): AxiosPromise<T>
+}
+
+export interface InterceptorManagerType<T> {
+  use(resolve: ResolveType<T>, reject?: RejectType): number
+  eject(id: number): void
+}
+
+export interface ResolveType<T> {
+  (val: T): T | Promise<T>
+}
+
+export interface RejectType {
+  (error: any): void
 }

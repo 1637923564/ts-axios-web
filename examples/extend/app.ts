@@ -7,7 +7,7 @@ axios({
     msg: 'hi'
   }
 }).then(res => {
-  console.log(res.data);
+  console.log(res);
 })
 
 axios('/extend/post', {
@@ -26,16 +26,28 @@ axios.request({
     msg: 'hello'
   }
 }).then(res => {
-  console.log(res)
+  console.log(res.data)
 })
 
 axios.get('/extend/get')
+  .then(res => {
+    console.log(res)
+  })
 
 axios.options('/extend/options')
+  .then(res => {
+    console.log(res)
+  })
 
 axios.delete('/extend/delete')
+  .then(res => {
+    console.log(res)
+  })
 
 axios.head('/extend/head')
+  .then(res => {
+    console.log(res)
+  })
 
 axios.post('/extend/post', { msg: 'post' })
   .then(res => {
@@ -43,8 +55,14 @@ axios.post('/extend/post', { msg: 'post' })
   })
 
 axios.put('/extend/put', { msg: 'put' })
+  .then(res => {
+    console.log(res);
+  })
 
 axios.patch('/extend/patch', { msg: 'patch' })
+  .then(res => {
+    console.log(res)
+  })
 
 interface ResponseData<T = any> {
   code: number
@@ -63,20 +81,18 @@ axios<ResponseData<User>>('/extend/user')
   })
   .catch(err => console.error(err))
 
-function getUser<T>() {
-  return axios<ResponseData<T>>('/extend/user')
-    .then(res => res.data)
-    .catch(err => console.error(err))
-}
+// function getUser<T>() {
+//   return axios<ResponseData<T>>('/extend/user')
+//     .then(res => res.data)
+//     .catch(err => console.error(err))
+// }
 
 
-async function test() {
-  const user = await getUser<User>()
-  if (user) {
-    console.log(user.result.age)
-  }
-}
+// async function test() {
+//   const user = await getUser<User>()
+//   if (user) {
+//     console.log(user)
+//   }
+// }
 
-test()
-
-test()
+// test()

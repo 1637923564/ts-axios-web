@@ -12,6 +12,8 @@ axios({
     b: 2
   }
 }).then(res => {
+  console.log('=========================');
+  
   console.log(res);
 })
 
