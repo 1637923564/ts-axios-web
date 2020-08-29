@@ -1,8 +1,21 @@
 import { RequestURLOptional, MethodsCollection } from '../conf'
+import { normalizeHeaders } from '../helpers/processHeaders'
+import { normalizeRequest, parseResponse } from '../helpers/processData'
 
 const defaultsSet: RequestURLOptional = {
   method: 'get',
   timeout: 0,
+  transformRequest: [
+    function(data, headers) {
+      normalizeHeaders(headers, data)
+      return normalizeRequest(data)
+    }
+  ],
+  transformResponse: [
+    function(data) {
+      return parseResponse(data)
+    }
+  ],
   headers: {
     common: {
       Accept: 'application/json, text/plain, */*'

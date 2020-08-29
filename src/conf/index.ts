@@ -34,6 +34,8 @@ export interface RequestOptionsConf {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  transformRequest?: TransformFnType[] | TransformFnType
+  transformResponse?: TransformFnType[] | TransformFnType
   [other: string]: any
 }
 
@@ -54,12 +56,14 @@ export interface RequestURLOptional {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  transformRequest?: TransformFnType[] | TransformFnType
+  transformResponse?: TransformFnType[] | TransformFnType
   [other: string]: any
 }
 
-// export interface DefaultSetConf extends RequestURLOptional {
-//   [other: string]: any
-// }
+export interface TransformFnType {
+  (data: any, headers?: any): any
+}
 
 export interface AxiosPromise<T = any> extends Promise<ResponseConf<T>> {}
 

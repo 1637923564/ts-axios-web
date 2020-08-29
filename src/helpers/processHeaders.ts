@@ -8,10 +8,15 @@ export const normalizeHeaders = (headers: any, data: any) => {
   // 当传入的headers中存在content-type选项时，将content-type的属性名规范为 Content-Type
   normalizeHeadersKey(headers, CONTENT_TYPE)
 
-  if (isPlainObject(data) || (typeof data === 'string' && isPlainObject(JSON.parse(data)))) {
-    if (headers && !headers[CONTENT_TYPE]) {
-      headers[CONTENT_TYPE] = 'application/json;charset=utf-8'
+  try {
+    // JSON.parse可能会报错，需要用try...catch语句
+    if (isPlainObject(data) || (typeof data === 'string' && isPlainObject(JSON.parse(data)))) {
+      if (headers && !headers[CONTENT_TYPE]) {
+        headers[CONTENT_TYPE] = 'application/json;charset=utf-8'
+      }
     }
+  } catch (e) {
+    // ...
   }
 
   return headers
