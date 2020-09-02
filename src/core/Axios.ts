@@ -11,7 +11,7 @@ import {
   ResponseConf
 } from '../conf'
 
-import dispatchRequest from './dispatchRequest'
+import dispatchRequest, { transformURL } from './dispatchRequest'
 import InterceptorManager from './interceptorManager'
 import mergeConfig from './mergeConfig'
 
@@ -24,7 +24,7 @@ interface PromiseChain<T> {
   rejected?: RejectType
 }
 
-export default class Axios implements AxiosMethodSConf {
+export default class Axios {
   interceptors: InterceptorsType
   defaults: RequestURLOptional
 
@@ -107,6 +107,11 @@ export default class Axios implements AxiosMethodSConf {
   patch(url: string, data?: any, conf?: RequestURLOptional): AxiosPromise {
     const config = __mixinConfig(url, 'patch', conf, data)
     return this.request(config)
+  }
+
+  getUri(config?: RequestURLOptional): string {
+    config = mergeConfig(this.defaults, config)
+    return transformURL(config as RequestOptionsConf)
   }
 }
 

@@ -1,5 +1,5 @@
 import { AxiosPromise, RequestOptionsConf, RequestURLOptional, ResponseConf } from '../conf'
-import { buildURL } from '../helpers/buildURL'
+import { buildURL, connectURL, isAbsulteURL } from '../helpers/buildURL'
 import xhr from '../adapters/xhr'
 import { normalizeRequest } from '../helpers/processData'
 import { mergeHeaders, normalizeHeaders } from '../helpers/processHeaders'
@@ -23,9 +23,15 @@ function processConfig(config: RequestOptionsConf): void {
 }
 
 // 处理传入的 url 和 params 选项
-function transformURL(config: RequestOptionsConf): string {
-  const { url, params } = config
-  return buildURL(url, params)
+export function transformURL(config: RequestOptionsConf): string {
+  let { url, params, paramsSerializer, baseURL } = config
+
+  // 拼接baseURL和URL
+  if (baseURL) {
+    url = isAbsulteURL(url) ? url : connectURL(baseURL, url)
+  }
+
+  return buildURL(url, params, paramsSerializer)
 }
 
 // 处理传入的 data 选项

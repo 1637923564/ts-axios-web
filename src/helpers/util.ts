@@ -16,6 +16,10 @@ export function isFormData(tar: any): tar is FormData {
   return tar instanceof FormData
 }
 
+export function isURLSearchParams(tar: any): tar is URLSearchParams {
+  return tar instanceof URLSearchParams
+}
+
 export function encode(tar: any): string {
   let ret = encodeURIComponent(tar)
     .replace(/%40/g, '@')

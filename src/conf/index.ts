@@ -26,8 +26,7 @@ export const enum MethodsCollection {
   PATCH = 'patch'
 }
 
-export interface RequestOptionsConf {
-  url: string
+interface RequestCommon {
   method?: Method
   params?: any
   data?: any
@@ -42,7 +41,19 @@ export interface RequestOptionsConf {
   xsrfCookieName?: string
   onDownloadProgress?: (e: ProgressEvent) => void
   onUploadProgress?: (e: ProgressEvent) => void
+  auth?: AuthorizationType
+  validateStatus?: (status: number) => boolean
+  paramsSerializer?: (params: any) => string
+  baseURL?: string
   [other: string]: any
+}
+
+export interface RequestOptionsConf extends RequestCommon {
+  url: string
+}
+
+export interface RequestURLOptional extends RequestCommon {
+  url?: string
 }
 
 export interface ResponseConf<T = any> {
@@ -52,25 +63,6 @@ export interface ResponseConf<T = any> {
   request: XMLHttpRequest
   status: number
   statusText: string
-}
-
-export interface RequestURLOptional {
-  url?: string
-  method?: Method
-  params?: any
-  data?: any
-  headers?: any
-  responseType?: XMLHttpRequestResponseType
-  timeout?: number
-  transformRequest?: TransformFnType[] | TransformFnType
-  transformResponse?: TransformFnType[] | TransformFnType
-  cancelToken?: CancelToken
-  withCredentials?: boolean
-  xsrfHeaderName?: string
-  xsrfCookieName?: string
-  onDownloadProgress?: (e: ProgressEvent) => void
-  onUploadProgress?: (e: ProgressEvent) => void
-  [other: string]: any
 }
 
 export interface TransformFnType {
@@ -97,6 +89,8 @@ export interface AxiosMethodSConf {
   defaults: RequestURLOptional
 
   interceptors: InterceptorsType
+
+  getUri: (config: RequestURLOptional) => string
 
   request<T = any>(config: RequestOptionsConf): AxiosPromise<T>
 
@@ -125,6 +119,13 @@ export interface AxiosStatic extends AxiosConf {
   Cancel: CancelStatic
   CancelToken: CancelTokenStatic
   isCancel: (info: any) => boolean
+  Axios: AxiosClass
+  all: <T>(arr: Array<T | Promise<T>>) => Promise<T[]>
+  spread<T, R>(callback: (...args: T[]) => R): (arr: T[]) => R
+}
+
+interface AxiosClass {
+  new (defaultsSet: RequestURLOptional): AxiosMethodSConf
 }
 
 export interface InterceptorManagerType<T> {
@@ -171,4 +172,9 @@ interface Cancel {
 
 interface CancelStatic {
   new (message?: string): Cancel
+}
+
+interface AuthorizationType {
+  username: string
+  password: string
 }

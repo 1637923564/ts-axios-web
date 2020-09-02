@@ -22,6 +22,9 @@ const defaultsSet: RequestURLOptional = {
     common: {
       Accept: 'application/json, text/plain, */*'
     }
+  },
+  validateStatus(status: number) {
+    return status >= 200 && status < 300
   }
 }
 

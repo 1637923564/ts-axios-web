@@ -1,4 +1,4 @@
-import { RequestURLOptional } from '../conf'
+import { RequestOptionsConf, RequestURLOptional } from '../conf'
 import { deepMerge, isPlainObject } from '../helpers/util'
 
 interface PlainObject {
@@ -6,7 +6,10 @@ interface PlainObject {
 }
 const processFnCollection: PlainObject = {}
 
-export default function mergeConfig(config1: RequestURLOptional, config2: RequestURLOptional = {}) {
+export default function mergeConfig(
+  config1: RequestURLOptional,
+  config2: RequestURLOptional = {}
+): RequestOptionsConf {
   const result = Object.create(null)
 
   Object.keys(config2).forEach(key => {
@@ -27,7 +30,7 @@ export default function mergeConfig(config1: RequestURLOptional, config2: Reques
 
   function merge(key: string) {
     let fn = processFnCollection[key] || defaultMerge
-    fn = key === 'headers' ? mergeHeaders : fn
+    fn = key === ('headers' || 'auth') ? mergeHeaders : fn
     result[key] = fn(config1[key], config2[key])
   }
 

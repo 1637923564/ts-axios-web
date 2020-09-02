@@ -23,7 +23,9 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
       xsrfCookieName,
       xsrfHeaderName,
       onDownloadProgress,
-      onUploadProgress
+      onUploadProgress,
+      auth,
+      validateStatus
     } = config
 
     const request = new XMLHttpRequest()
@@ -93,6 +95,10 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
       }
     }
 
+    if (auth) {
+      headers['Authorization'] = 'Basic ' + btoa(`${auth.username}:${auth.password}`)
+    }
+
     const headerKeys = Object.keys(headers)
 
     // 设置请求头
@@ -118,7 +124,7 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
     request.send(data)
 
     function statusError(responseInfo: ResponseConf) {
-      if (request.status >= 200 && request.status < 300) {
+      if (validateStatus!(request.status)) {
         resolve(responseInfo)
       } else {
         // 用setTimeout做异步处理，因为这个是onreadystatechange触发执行的，会先于其他事件，从而导其他reject函数不能执行
