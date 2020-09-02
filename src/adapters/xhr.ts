@@ -1,22 +1,42 @@
 import { CONTENT_TYPE, RequestOptionsConf, ResponseConf, AxiosPromise } from '../conf'
 import { parseResponseHeaders } from '../helpers/processHeaders'
 import { createError } from '../helpers/error'
+import cookie from '../helpers/cookie'
+import { isFormData } from '../helpers/util'
+
+interface OriginFlagType {
+  host: string
+  protocal: string
+}
 
 function xhr(config: RequestOptionsConf): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { data = null, method = 'get', url, headers = {}, responseType, timeout } = config
+    const {
+      data = null,
+      method = 'get',
+      url,
+      headers = {},
+      responseType,
+      timeout,
+      cancelToken,
+      withCredentials,
+      xsrfCookieName,
+      xsrfHeaderName,
+      onDownloadProgress,
+      onUploadProgress
+    } = config
 
-    const headerKeys = Object.keys(headers)
     const request = new XMLHttpRequest()
 
-    if (responseType) {
-      request.responseType = responseType
-    }
-    if (timeout) {
-      request.timeout = timeout
-    }
+    request.responseType = responseType || ''
+    request.timeout = timeout!
+    request.withCredentials = withCredentials || false
 
     request.open(method.toUpperCase(), url, true)
+
+    request.onprogress = onDownloadProgress ? onDownloadProgress : null
+
+    request.upload.onprogress = onUploadProgress ? onUploadProgress : null
 
     request.onreadystatechange = () => {
       if (request.readyState !== 4) {
@@ -65,16 +85,35 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
       )
     }
 
-    // console.log(headerKeys)
+    // 设置xsrf请求头
+    if (withCredentials || (isSameOrigin(url) && xsrfCookieName)) {
+      const xsrfHeaderValue = cookie.read(xsrfCookieName)
+      if (xsrfHeaderName && xsrfHeaderValue) {
+        headers[xsrfHeaderName] = xsrfHeaderValue
+      }
+    }
+
+    const headerKeys = Object.keys(headers)
+
+    // 设置请求头
     headerKeys.forEach(key => {
       const val = headers[key]
-      // 不向服务器传输数据时，不需要配置Content-Type
-      if (data === null && key.toUpperCase() === CONTENT_TYPE.toUpperCase()) {
+      // 不向服务器传输数据时，不需要配置Content-Type;
+      // 当传输的数据为FormData类型时，浏览器会默认添加Content-Type：'multipart/form-data'
+      if ((data === null || isFormData(data)) && key.toUpperCase() === CONTENT_TYPE.toUpperCase()) {
         delete headers[key]
       } else {
         request.setRequestHeader(key, val)
       }
     })
+
+    // 取消发送请求
+    if (cancelToken) {
+      cancelToken.promise.then(reason => {
+        request.abort()
+        reject(reason)
+      })
+    }
 
     request.send(data)
 
@@ -98,6 +137,26 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
       }
     }
   })
+}
+
+function isSameOrigin(targetURL: string): boolean {
+  const targetOrigin = getURLInfo(targetURL)
+  const currentOrigin = getURLInfo(window.location.href)
+
+  return (
+    targetOrigin.host === currentOrigin.host && targetOrigin.protocal === currentOrigin.protocal
+  )
+}
+
+function getURLInfo(url: string): OriginFlagType {
+  const domNode = document.createElement('a')
+  domNode.setAttribute('href', 'url')
+  const { protocol, host } = domNode
+
+  return {
+    host,
+    protocal: protocol
+  }
 }
 
 export default xhr

@@ -36,6 +36,12 @@ export interface RequestOptionsConf {
   timeout?: number
   transformRequest?: TransformFnType[] | TransformFnType
   transformResponse?: TransformFnType[] | TransformFnType
+  cancelToken?: CancelToken
+  withCredentials?: boolean
+  xsrfHeaderName?: string
+  xsrfCookieName?: string
+  onDownloadProgress?: (e: ProgressEvent) => void
+  onUploadProgress?: (e: ProgressEvent) => void
   [other: string]: any
 }
 
@@ -58,6 +64,12 @@ export interface RequestURLOptional {
   timeout?: number
   transformRequest?: TransformFnType[] | TransformFnType
   transformResponse?: TransformFnType[] | TransformFnType
+  cancelToken?: CancelToken
+  withCredentials?: boolean
+  xsrfHeaderName?: string
+  xsrfCookieName?: string
+  onDownloadProgress?: (e: ProgressEvent) => void
+  onUploadProgress?: (e: ProgressEvent) => void
   [other: string]: any
 }
 
@@ -108,6 +120,13 @@ export interface AxiosConf extends AxiosMethodSConf {
   <T = any>(configOrURL: RequestOptionsConf | string, conf?: RequestURLOptional): AxiosPromise<T>
 }
 
+export interface AxiosStatic extends AxiosConf {
+  create: (config?: RequestURLOptional) => AxiosConf
+  Cancel: CancelStatic
+  CancelToken: CancelTokenStatic
+  isCancel: (info: any) => boolean
+}
+
 export interface InterceptorManagerType<T> {
   use(resolve: ResolveType<T>, reject?: RejectType): number
   eject(id: number): void
@@ -119,4 +138,37 @@ export interface ResolveType<T> {
 
 export interface RejectType {
   (error: any): void
+}
+
+export interface CancelToken {
+  promise: Promise<Cancel>
+  reason: Cancel | null
+  throwIfRequested(): void
+}
+
+export interface Canceler {
+  (message?: string): void
+}
+
+export interface CancelTokenSource {
+  token: CancelToken
+  cancel: Canceler
+}
+
+export interface CancelTokenStatic {
+  new (executor: CancelExecutor): CancelToken
+
+  source(): CancelTokenSource
+}
+
+export interface CancelExecutor {
+  (cancel: Canceler): void
+}
+
+interface Cancel {
+  message?: string
+}
+
+interface CancelStatic {
+  new (message?: string): Cancel
 }

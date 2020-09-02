@@ -19,22 +19,44 @@ import qs from 'qs'
 //   console.log(res.data)
 // })
 
-axios({
-  transformRequest: [
-    (function(data) {
-      return qs.stringify(data)
-    }), 
-    ...(axios.defaults.transformRequest as TransformFnType[])
-  ],
-  transformResponse: [
-    ...(axios.defaults.transformResponse as TransformFnType[]), 
-    function(data) {
-      if (typeof data === 'object') {
-        data.b = 2
-      }
-      return data
+// axios({
+//   transformRequest: [
+//     (function(data) {
+//       return qs.stringify(data)
+//     }), 
+//     ...(axios.defaults.transformRequest as TransformFnType[])
+//   ],
+//   transformResponse: [
+//     ...(axios.defaults.transformResponse as TransformFnType[]), 
+//     function(data) {
+//       if (typeof data === 'object') {
+//         data.b = 2
+//       }
+//       return data
+//     }
+//   ],
+//   url: '/config/post',
+//   method: 'post',
+//   data: {
+//     a: 1
+//   }
+// }).then((res) => {
+//   console.log(res)
+// })
+
+const instance = axios.create({
+  transformRequest: [(function(data) {
+    return qs.stringify(data)
+  }), ...(axios.defaults.transformRequest as TransformFnType[])],
+  transformResponse: [...(axios.defaults.transformResponse as TransformFnType[]), function(data) {
+    if (typeof data === 'object') {
+      data.b = 2
     }
-  ],
+    return data
+  }]
+})
+
+instance({
   url: '/config/post',
   method: 'post',
   data: {

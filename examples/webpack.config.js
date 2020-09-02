@@ -29,6 +29,10 @@ module.exports = {
         use: [ 'tslint-loader' ]
       },
       {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      },
+      {
         test: /\.tsx?$/,
         use: [
           {

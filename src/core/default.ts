@@ -5,6 +5,8 @@ import { normalizeRequest, parseResponse } from '../helpers/processData'
 const defaultsSet: RequestURLOptional = {
   method: 'get',
   timeout: 0,
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+  xsrfCookieName: 'XSRF-TOKEN',
   transformRequest: [
     function(data, headers) {
       normalizeHeaders(headers, data)

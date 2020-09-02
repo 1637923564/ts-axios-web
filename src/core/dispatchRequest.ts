@@ -1,11 +1,12 @@
 import { AxiosPromise, RequestOptionsConf, RequestURLOptional, ResponseConf } from '../conf'
 import { buildURL } from '../helpers/buildURL'
 import xhr from '../adapters/xhr'
-import { normalizeRequest, parseResponse } from '../helpers/processData'
+import { normalizeRequest } from '../helpers/processData'
 import { mergeHeaders, normalizeHeaders } from '../helpers/processHeaders'
 import transform from './transform'
 
 function dispatchRequest(config: RequestOptionsConf): AxiosPromise {
+  throwIfCancellationRequested(config)
   processConfig(config)
   return xhr(config).then(res => {
     return transformResponseData(res, config)
@@ -43,6 +44,10 @@ function transformResponseData(res: ResponseConf, config: RequestURLOptional): R
   const { transformResponse } = config
   res.data = transform(data, headers, transformResponse!)
   return res
+}
+
+function throwIfCancellationRequested(config: RequestOptionsConf) {
+  config.cancelToken?.throwIfRequested()
 }
 
 export default dispatchRequest
