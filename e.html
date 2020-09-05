@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function isPlainObject(val) {
+      return Object.prototype.toString.call(val) === '[object Object]'
+    }
+
+    function deepMerge(...args) {
+      const result = Object.create(null)
+
+      args.forEach(obj => {
+        // if (isPlainObject(obj)) return
+
+        Object.keys(obj).forEach(key => {
+          const val = obj[key]
+
+          if (isPlainObject(val)) {
+            console.log(key)
+            if (result[key]) {
+              result[key] = deepMerge(result[key], val)
+            } else {
+              result[key] = deepMerge(val)
+            }
+          } else {
+            result[key] = val
+          }
+        })
+      })
+
+      return result
+    }
+
+    let a = {
+      name: 'Jerry',
+      age: 12
+    }
+    let b = {
+      name: 'Tom',
+      love: {
+        exercise: 'run'
+      }
+    }
+
+    console.log(deepMerge(a, b))
+
+  </script>
+</body>
+
+</html>

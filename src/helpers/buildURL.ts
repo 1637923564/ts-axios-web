@@ -1,5 +1,10 @@
 import { encode, isDate, isPlainObject, isURLSearchParams } from './util'
 
+interface OriginFlagType {
+  host: string
+  protocal: string
+}
+
 export function buildURL(
   url: string,
   params?: any,
@@ -63,11 +68,31 @@ export function buildURL(
   return url
 }
 
-export function isAbsulteURL(url: string): boolean {
+export function isAbsoluteURL(url: string): boolean {
   // 通过匹配协议字符串来判断是否为一个绝对路径的URL
-  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
+  return /^([A-z][A-z\d\+\-\.]*:)?\/\//.test(url)
 }
 
 export function connectURL(baseURL: string, url: string): string {
   return baseURL.replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '')
+}
+
+export function isSameOrigin(targetURL: string): boolean {
+  const targetOrigin = getURLInfo(targetURL)
+  const currentOrigin = getURLInfo(window.location.href)
+
+  return (
+    targetOrigin.host === currentOrigin.host && targetOrigin.protocal === currentOrigin.protocal
+  )
+}
+
+function getURLInfo(url: string): OriginFlagType {
+  const domNode = document.createElement('a')
+  domNode.setAttribute('href', url)
+  const { protocol, host } = domNode
+
+  return {
+    host,
+    protocal: protocol
+  }
 }

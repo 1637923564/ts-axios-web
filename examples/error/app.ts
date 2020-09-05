@@ -6,8 +6,6 @@ axios({
 }).then((res) => {
   console.log(res)
 }).catch((e: AxiosErrorConf) => {
-  console.log(e.isAxiosError)
-  // throw e
   console.log(e)
 })
 
@@ -15,9 +13,8 @@ axios({
   method: 'get',
   url: '/error/get'
 }).then((res) => {
-  // console.log(res)
+  // ...
 }).catch((e: AxiosErrorConf) => {
-  // throw e
   console.log(e)
 })
 

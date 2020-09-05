@@ -1,13 +1,9 @@
 import { CONTENT_TYPE, RequestOptionsConf, ResponseConf, AxiosPromise } from '../conf'
 import { parseResponseHeaders } from '../helpers/processHeaders'
 import { createError } from '../helpers/error'
+import { isSameOrigin } from '../helpers/buildURL'
 import cookie from '../helpers/cookie'
 import { isFormData } from '../helpers/util'
-
-interface OriginFlagType {
-  host: string
-  protocal: string
-}
 
 function xhr(config: RequestOptionsConf): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -57,7 +53,7 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
         statusText: request.statusText
       }
 
-      // 非200状态码异常：
+      // 状态码错误：
       statusError(responseInfo)
     }
 
@@ -143,26 +139,6 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
       }
     }
   })
-}
-
-function isSameOrigin(targetURL: string): boolean {
-  const targetOrigin = getURLInfo(targetURL)
-  const currentOrigin = getURLInfo(window.location.href)
-
-  return (
-    targetOrigin.host === currentOrigin.host && targetOrigin.protocal === currentOrigin.protocal
-  )
-}
-
-function getURLInfo(url: string): OriginFlagType {
-  const domNode = document.createElement('a')
-  domNode.setAttribute('href', 'url')
-  const { protocol, host } = domNode
-
-  return {
-    host,
-    protocal: protocol
-  }
 }
 
 export default xhr

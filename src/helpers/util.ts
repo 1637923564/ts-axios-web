@@ -1,9 +1,5 @@
 let oToString = Object.prototype.toString
 
-export function isObject(tar: any) {
-  return typeof tar !== null && typeof tar === 'object'
-}
-
 export function isPlainObject(tar: any) {
   return oToString.call(tar) === '[object Object]'
 }
@@ -46,13 +42,16 @@ export function deepMerge(...args: any[]) {
   const result = Object.create(null)
 
   args.forEach(obj => {
+    if (!isPlainObject(obj)) return
+
     Object.keys(obj).forEach(key => {
       const val = obj[key]
-      if (isPlainObject(key)) {
+
+      if (isPlainObject(val)) {
         if (result[key]) {
           result[key] = deepMerge(result[key], val)
         } else {
-          deepMerge(val)
+          result[key] = deepMerge(val)
         }
       } else {
         result[key] = val

@@ -1,6 +1,7 @@
 import { CONTENT_TYPE, Method, MethodsCollection } from '../conf'
 import { deepMerge, isPlainObject } from './util'
 
+// 设置请求头
 export const normalizeHeaders = (headers: any, data: any) => {
   if (!headers) {
     headers = {}
@@ -22,6 +23,7 @@ export const normalizeHeaders = (headers: any, data: any) => {
   return headers
 }
 
+// 如果headers的Content-Type属性名不规范，则将它规范成Content-Type
 function normalizeHeadersKey(headers: any, disered: string) {
   let keys = Object.keys(headers)
 
@@ -33,23 +35,30 @@ function normalizeHeadersKey(headers: any, disered: string) {
   })
 }
 
+// 解析响应头
 export const parseResponseHeaders = (headers: string): any => {
-  if (!headers) {
-    return
-  }
-
   const parse = Object.create(null)
+
+  if (!headers) {
+    return parse
+  }
 
   // 将字符串(如："connection: keep-alive\r\ncontent-length: 13\r\ncontent-type: application/json;)转换成一个对象
   headers.split('\r\n').forEach(row => {
-    let [key, val] = row.split(':')
-    key = key.trim().toLowerCase()
+    let [key, ...vals] = row.split(':')
+
+    let val = vals.join(':')
+
     if (!key) {
       return
     }
+
+    key = key.trim().toLowerCase()
+
     if (val) {
       val = val.trim()
     }
+
     parse[key] = val
   })
 
@@ -61,7 +70,7 @@ export function mergeHeaders(headers: any, method: Method) {
     return headers
   }
 
-  headers = deepMerge(headers['common'] || {}, headers[method] || {}, headers)
+  headers = deepMerge(headers['common'] || {}, headers[method.toLowerCase()] || {}, headers)
 
   const methods = [
     MethodsCollection.GET,

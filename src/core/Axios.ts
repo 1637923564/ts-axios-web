@@ -48,6 +48,8 @@ export default class Axios {
     // 自定义的config和默认config进行合并处理
     config = mergeConfig(this.defaults, config)
 
+    config.method = config.method!.toLowerCase() as Method
+
     // 拦截器实现
     const chain: PromiseChain<any>[] = [
       {
