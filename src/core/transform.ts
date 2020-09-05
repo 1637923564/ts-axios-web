@@ -12,6 +12,7 @@ export default function transform(
     fns = [fns]
   }
 
+  // 执行配置中transform相关的选项
   fns.forEach(fn => {
     if (fn(data, headers) !== undefined) {
       data = fn(data, headers)
