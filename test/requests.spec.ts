@@ -98,41 +98,6 @@ describe('requests', () => {
     }
   })
 
-  // test('should reject when `validateStatus` returns false', () => {
-  //   const resolveSpy = jest.fn((res: ResponseConf) => {
-  //     return res
-  //   })
-
-  //   const rejectSpy = jest.fn((e: AxiosErrorConf) => {
-  //     return e
-  //   })
-
-  //   axios('/foo', {
-  //     validateStatus(status) {
-  //       return status !== 500
-  //     }
-  //   })
-  //     .then(resolveSpy)
-  //     .catch(rejectSpy)
-  //     .then(next)
-
-  //   getAjaxRequest().then(request => {
-  //     request.respondWith({
-  //       status: 500
-  //     })
-  //   })
-
-  //   function next(reason: AxiosErrorConf | ResponseConf) {
-  //     expect(resolveSpy).not.toHaveBeenCalled()
-  //     expect(rejectSpy).toHaveBeenCalled()
-  //     expect(reason instanceof Error).toBeTruthy()
-  //     expect((reason as AxiosErrorConf).message).toBe('Request failed with status code 500')
-  //     expect((reason as AxiosErrorConf).response!.status).toBe(500)
-
-  //     done()
-  //   }
-  // })
-
   test('should resolve when `validateStatus` returns true', done => {
     const resolveSpy = jest.fn((res: ResponseConf) => {
       return res
@@ -166,8 +131,36 @@ describe('requests', () => {
   })
 
   test('should return JSON when resolved', done => {
-    jasmine.Ajax.uninstall()
-    jasmine.Ajax.install()
+    let response: ResponseConf
+
+    axios('/api/account/signup', {
+      auth: {
+        username: '',
+        password: ''
+      },
+      method: 'post',
+      headers: {
+        Accept: 'application/json'
+      }
+    }).then(res => {
+      response = res
+    })
+
+    getAjaxRequest().then(request => {
+      request.respondWith({
+        status: 200,
+        statusText: 'OK',
+        responseText: '{"a": 1}'
+      })
+
+      setTimeout(() => {
+        expect(response.data).toEqual({ a: 1 })
+        done()
+      }, 100)
+    })
+  })
+
+  test('should return JSON when resolved', done => {
     let response: ResponseConf
 
     axios('/api/account/signup', {
@@ -191,9 +184,90 @@ describe('requests', () => {
       })
 
       setTimeout(() => {
-        expect(response.data).toEqual({ error: 'BAD USERNAME', code: 1 })
+        expect(typeof response.data).toBe('object')
         expect(response.data.error).toBe('BAD USERNAME')
         expect(response.data.code).toBe(1)
+        done()
+      }, 100)
+    })
+  })
+
+  test('should supply correct response', done => {
+    let response: ResponseConf
+
+    axios.post('/foo').then(res => {
+      response = res
+    })
+
+    getAjaxRequest().then(request => {
+      request.respondWith({
+        status: 200,
+        statusText: 'OK',
+        responseText: '{"foo": "bar"}',
+        responseHeaders: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      setTimeout(() => {
+        expect(response.data.foo).toBe('bar')
+        expect(response.status).toBe(200)
+        expect(response.statusText).toBe('OK')
+        expect(response.headers['content-type']).toBe('application/json')
+        done()
+      }, 100)
+    })
+  })
+
+  test('should allow overriding Content-Type header case-insensitive', () => {
+    let response: ResponseConf
+
+    axios
+      .post(
+        '/foo',
+        { prop: 'value' },
+        {
+          headers: {
+            'content-type': 'application/json'
+          }
+        }
+      )
+      .then(res => {
+        response = res
+      })
+
+    return getAjaxRequest().then(request => {
+      expect(request.requestHeaders['Content-Type']).toBe('application/json')
+    })
+  })
+
+  test('should support array buffer response', done => {
+    let response: ResponseConf
+
+    function str2ab(str: string) {
+      const buff = new ArrayBuffer(str.length * 2)
+      const view = new Uint16Array(buff)
+      for (let i = 0; i < str.length; i++) {
+        view[i] = str.charCodeAt(i)
+      }
+      return buff
+    }
+
+    axios('/foo', {
+      responseType: 'arraybuffer'
+    }).then(data => {
+      response = data
+    })
+
+    getAjaxRequest().then(request => {
+      request.respondWith({
+        status: 200,
+        // @ts-ignore
+        response: str2ab('Hello world')
+      })
+
+      setTimeout(() => {
+        expect(response.data.byteLength).toBe(22)
         done()
       }, 100)
     })

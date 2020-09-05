@@ -3,10 +3,10 @@ import Cancel from './Cancel'
 
 export default class CancelToken {
   promise: Promise<Cancel>
-  reason: Cancel | null
+  reason?: Cancel
 
   constructor(executor: CancelExecutor) {
-    this.reason = null
+    this.reason
 
     let newResolve: (message: Cancel) => any
     this.promise = new Promise(resolve => {

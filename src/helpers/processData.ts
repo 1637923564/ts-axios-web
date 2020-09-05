@@ -17,6 +17,5 @@ export const parseResponse = (data: any): any => {
       // ...
     }
   }
-  // console.log(data)
   return data
 }

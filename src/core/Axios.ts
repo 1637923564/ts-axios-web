@@ -44,7 +44,6 @@ export default class Axios {
     } else {
       config = configOrURL
     }
-
     // 自定义的config和默认config进行合并处理
     config = mergeConfig(this.defaults, config)
 

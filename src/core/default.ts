@@ -10,8 +10,10 @@ const defaultsSet: RequestURLOptional = {
   transformRequest: [
     function(data, headers) {
       normalizeHeaders(headers, data)
-      return normalizeRequest(data)
-    }
+      data = normalizeRequest(data)
+      return data
+    },
+    function() {}
   ],
   transformResponse: [
     function(data) {

@@ -143,7 +143,7 @@ export interface RejectType {
 
 export interface CancelToken {
   promise: Promise<Cancel>
-  reason: Cancel | null
+  reason?: Cancel
   throwIfRequested(): void
 }
 

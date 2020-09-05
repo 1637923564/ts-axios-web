@@ -3,17 +3,19 @@ import { TransformFnType } from '../conf'
 export default function transform(
   data: any,
   headers: any,
-  fns: TransformFnType[] | TransformFnType
+  fns?: TransformFnType[] | TransformFnType
 ) {
-  if (!data) {
-    return
+  if (!fns) {
+    return data
   }
   if (!Array.isArray(fns)) {
     fns = [fns]
   }
 
   fns.forEach(fn => {
-    data = fn(data, headers)
+    if (fn(data, headers) !== undefined) {
+      data = fn(data, headers)
+    }
   })
 
   return data

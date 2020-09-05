@@ -96,7 +96,6 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
     }
 
     const headerKeys = Object.keys(headers)
-
     // 设置请求头
     headerKeys.forEach(key => {
       const val = headers[key]

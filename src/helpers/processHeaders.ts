@@ -6,6 +6,7 @@ export const normalizeHeaders = (headers: any, data: any) => {
   if (!headers) {
     headers = {}
   }
+
   // 当传入的headers中存在content-type选项时，将content-type的属性名规范为 Content-Type
   normalizeHeadersKey(headers, CONTENT_TYPE)
 

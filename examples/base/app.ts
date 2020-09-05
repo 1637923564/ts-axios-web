@@ -17,12 +17,9 @@ axios({
   console.log(res);
 })
 
-axios.post('/base/post', {
-  a: 1, 
-  b: 2
-}, {
+axios.post('/base/post', false, {
   headers: {
-    'content-type': 'application/json',
+    // 'content-type': 'application/json',
     'Accept': 'application/json, text/plain, */*'
   }
 }).then(res => {
