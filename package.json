@@ -1,18 +1,18 @@
 {
-  "name": "typescript-axios",
+  "name": "typescript-axios-own",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/typescript-axios.umd.js",
-  "module": "dist/typescript-axios.es5.js",
-  "typings": "dist/types/typescript-axios.d.ts",
+  "main": "dist/axios.umd.js",
+  "module": "dist/axios.es5.js",
+  "typings": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
   "author": "1637923564 <1637923564@qq.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/1637923564/typescript-axios"
   },
   "license": "MIT",
   "engines": {
@@ -33,7 +33,9 @@
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
     "travis-deploy-once": "travis-deploy-once",
-    "dev": "node examples/server.js"
+    "dev": "node examples/server.js",
+    "prepub": "npm run test:prod && npm run build",
+    "pub": "sh release.sh"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -133,7 +135,7 @@
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^8.0.1",
     "tslint-loader": "^3.5.4",
-    "typedoc": "^0.12.0",
+    "typedoc": "^0.19.1",
     "typescript": "^4.0.2",
     "webpack": "^4.44.1",
     "webpack-dev-middleware": "^3.5.0",
