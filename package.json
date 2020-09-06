@@ -1,6 +1,6 @@
 {
   "name": "typescript-axios-own",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "",
   "keywords": [],
   "main": "dist/axios.umd.js",
