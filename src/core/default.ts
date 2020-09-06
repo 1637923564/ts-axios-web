@@ -2,6 +2,7 @@ import { RequestURLOptional, MethodsCollection } from '../conf'
 import { normalizeHeaders } from '../helpers/processHeaders'
 import { normalizeRequest, parseResponse } from '../helpers/processData'
 
+// 设定一个默认的配置
 const defaultsSet: RequestURLOptional = {
   method: 'get',
   timeout: 0,
