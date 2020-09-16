@@ -22,7 +22,7 @@ function __(defaults: RequestURLOptional): AxiosStatic {
 
 const axios = __(defaultsSet)
 
-// 为axios添加create方法
+// 为 axios 添加 create 方法
 axios.create = (config?: RequestURLOptional): AxiosConf => {
   return __(mergeConfig(defaultsSet, config))
 }
