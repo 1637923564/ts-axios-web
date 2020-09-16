@@ -53,7 +53,7 @@ export function buildURL(
           // encodeURIComponent 不会转化单引号，所以需要转换成双引号
           val = JSON.stringify(val)
         }
-        // 将 params 转换成URLEncode编码，这些字符不需要转换：@ : $ , [ ]，空格字符转换成 +
+        // 将 params 转换成统一资源标识符（URI），这些字符不需要转换：@ : $ , [ ]，空格字符转换成 +
         ports.push(`${encode(k)}=${encode(val)}`)
       })
     })
@@ -77,12 +77,14 @@ export function connectURL(baseURL: string, url: string): string {
   return baseURL.replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '')
 }
 
+// 判断 targetURL 是否和当前页面的 URL 同域
 export function isSameOrigin(targetURL: string): boolean {
-  const targetOrigin = getURLInfo(targetURL)
-  const currentOrigin = getURLInfo(window.location.href)
+  const { host: targetHost, protocal: targetPro } = getURLInfo(targetURL)
+  const { host: currentHost, protocal: currentPro } = getURLInfo(window.location.href)
 
   return (
-    targetOrigin.host === currentOrigin.host && targetOrigin.protocal === currentOrigin.protocal
+    // 协议相同，域名相同，则返回 true
+    targetHost === currentHost && targetPro === currentPro
   )
 }
 

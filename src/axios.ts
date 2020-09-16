@@ -9,10 +9,12 @@ import { mixin } from './helpers/util'
 function __(defaults: RequestURLOptional): AxiosStatic {
   const context = new Axios(defaults)
 
+  // _ 为 Axios 原型上的 request 方法
+  // request 方法使用了 this 关键字，所以它的 this 必须指向 Axios 的实例
   const _ = Axios.prototype.request.bind(context)
 
-  // 这里实现了在一个函数上混入了 context 实例的所有方法和属性
-  // context 是一个用class关键字声明的类的实例，它原型的方法是不可枚举，这里利用typescript编译成了es5，所以就可以枚举了。
+  // 这里实现了在一个函数 _ 上混入了 context 实例的所有方法和属性
+  // typescript 将 es6 编译成了 es5，所以该类(用 class 声明的类)原型上的方法可枚举
   const ret = mixin(_, context)
 
   return (ret as unknown) as AxiosStatic
@@ -31,8 +33,8 @@ axios.CancelToken = CancelToken
 axios.all = arr => {
   return Promise.all(arr)
 }
-axios.spread = function spread(callback) {
-  return function wrap(arr) {
+axios.spread = callback => {
+  return arr => {
     return callback.apply(null, arr)
   }
 }

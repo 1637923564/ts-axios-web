@@ -13,8 +13,7 @@ const defaultsSet: RequestURLOptional = {
       normalizeHeaders(headers, data)
       data = normalizeRequest(data)
       return data
-    },
-    function() {}
+    }
   ],
   transformResponse: [
     function(data) {

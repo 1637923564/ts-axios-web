@@ -7,12 +7,11 @@ import {
 } from '../conf'
 import { buildURL, connectURL, isAbsoluteURL } from '../helpers/buildURL'
 import xhr from '../adapters/xhr'
-import { normalizeRequest } from '../helpers/processData'
-import { mergeHeaders, normalizeHeaders } from '../helpers/processHeaders'
+import { mergeHeaders } from '../helpers/processHeaders'
 import transform from './transform'
-import { parseResponse } from '../helpers/processData'
 
 function dispatchRequest(config: RequestOptionsConf): AxiosPromise {
+  // 用于判断请求是否被取消
   throwIfCancellationRequested(config)
 
   processConfig(config)

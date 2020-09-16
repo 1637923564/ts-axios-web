@@ -54,7 +54,7 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
       }
 
       // 状态码错误：
-      statusError(responseInfo)
+      statusCodeResolve(responseInfo)
     }
 
     // 网络错误
@@ -85,6 +85,7 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
 
     // 设置xsrf请求头
     if (withCredentials || (isSameOrigin(url) && xsrfCookieName)) {
+      // 如果存在一个名为 xsrfCookieName 的 cookie，则返回它的值。
       const xsrfHeaderValue = cookie.read(xsrfCookieName)
       if (xsrfHeaderName && xsrfHeaderValue) {
         headers[xsrfHeaderName] = xsrfHeaderValue
@@ -92,6 +93,7 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
     }
 
     if (auth) {
+      // 添加一个请求头 Authorization（一般用于验证用户代理身份的凭证）
       headers['Authorization'] = 'Basic ' + btoa(`${auth.username}:${auth.password}`)
     }
 
@@ -118,7 +120,7 @@ function xhr(config: RequestOptionsConf): AxiosPromise {
 
     request.send(data)
 
-    function statusError(responseInfo: ResponseConf) {
+    function statusCodeResolve(responseInfo: ResponseConf) {
       if (validateStatus!(request.status)) {
         resolve(responseInfo)
       } else {

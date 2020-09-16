@@ -72,6 +72,7 @@ export default class Axios {
       promise = promise.then(resolved, rejected)
     }
 
+    // 实际上 dispachRequest 执行时返回了一个 AxiosPromise 类型 Promise 实例
     return (promise as unknown) as AxiosPromise
   }
 
@@ -122,7 +123,8 @@ function __mixinConfig(
   conf?: RequestURLOptional,
   data?: any
 ): RequestOptionsConf {
-  if (data !== null && data !== undefined) {
+  // data 参数不是 undefined 或 null 的时候
+  if (data != null) {
     return Object.assign(conf || {}, {
       url,
       data,
